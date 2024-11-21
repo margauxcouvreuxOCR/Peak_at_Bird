@@ -56,9 +56,12 @@ extension DetailView {
         func fetchImage(urlString: String) -> UIImage? {
             //try to download image
             // Affiche l'image de l'oiseau ou une URL de fallback si l'image est invalide
-            if let url = URL(string:"https://cdn.download.ams.birds.cornell.edu/api/v1/asset/306062281/480"),let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+            Task {
+                
+            }
+            /*if let url = URL(string:"https://cdn.download.ams.birds.cornell.edu/api/v1/asset/306062281/480"),let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 return image
-            } else if let url = URL(string:urlString), let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+            } else*/ if let url = URL(string:urlString), let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 return image
             }
             return nil

@@ -16,7 +16,7 @@ struct Bird: Identifiable, Decodable {
     var placeOfFound: String
     var diet: String
     var description: String
-    var wingspanCm : Int
+    var wingspanCm : Int?
     var weightKg: Float
     var image: String
     

@@ -1,25 +1,33 @@
 import SwiftUI
+import UIKit
 
 struct SearchView: View {
-    @State private var searchText = ""
-    @ObservedObject var birdAPI = BirdAPI.shared
-    @State var birds: [Bird] = []
+
+
+//    @ObservedObject var birdAPI = BirdAPI.shared
+   
+    @ObservedObject var viewModel: ViewModel
     
     var body: some View {
         VStack {
-            if birds.isEmpty {
+            if viewModel.birds.isEmpty {
                 Text("No birds found")
                     .font(.headline)
                     .foregroundColor(.gray)
             } else {
-                BirdListView(birds: birds) // Liste des oiseaux
+                BirdListView(birds: viewModel.birds) // Liste des oiseaux
             }
         }
         .navigationTitle("Search Birds")
-        .searchable(text: $searchText)
-        .onChange(of: searchText) { newValue, initial in
-            birdAPI.fetchBirds(query: newValue)
+        .searchable(text: $viewModel.searchText)
+        .onChange(of: viewModel.searchText) { newValue, initial in
+//            birdAPI.fetchBirds(query: newValue)
+            viewModel.fetchBirds(query: newValue)
         }
+    }
+    
+    init (birds: [Bird] = []) {
+        viewModel = .init(tabBirds: birds)
     }
 }
 
@@ -45,3 +53,25 @@ struct BirdListView: View {
     }
 }
 
+extension SearchView {
+    
+    class ViewModel: ObservableObject {
+        
+        @Published var searchText = ""
+        @Published var birds: [Bird]
+        
+        init(tabBirds: [Bird]) {
+            self.birds = tabBirds
+        }
+        
+        func fetchBirds(query: String) {
+            Task {
+                let newBirds =  await BirdAPI.shared.fetchBirds(query: query)
+                DispatchQueue.main.async {
+                    self.birds = newBirds
+                }
+            }
+            
+        }
+    }
+}
